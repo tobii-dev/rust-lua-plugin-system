@@ -29,58 +29,57 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 2. Write the basics: `plugins/foo/foo.lua`
     2.1 Every plugin should have a name and version:
 	```Lua
-	-- This M thing represents the the Lua module:
-	--    Everything in there will be passed to the plugin loader.
+	-- This M thing represents the the Lua module.
+	-- Everything in there will be passed to the plugin loader.
 	local M = {}
 	
 	-- Every plugin should have an info table.
 	M.info = {
-	    name = "Foo", -- A very original name for our plugin
-	    version = 0.1 -- The version.
-    }
-
-    return M -- Return this plugin :D
+		name = "Foo", -- A very original name for our plugin
+		version = 0.1 -- The version.
+	}
+	
+    return M -- Return: this plugin :D
 	```
-	2.2 Like this, our plugin would not load. To load plugins, the plugin loader calls an `init()` function for every plugin. Lets add this:
+	2.2 Like this, our plugin would not load. To load plugins, the plugin loader calls an `init()` function for every plugin. Lets add this function:
 	```Lua
 	-- This M thing represents the the Lua module:
-	--    Everything in there will be passed to the plugin loader.
+	--  Everything in there will be passed to the plugin loader.
 	local M = {}
 	
 	-- Every plugin should have an info table.
 	M.info = {
-	    name = "Foo", -- A very original name for our plugin
-	    version = 0.1 -- The version.
-    }
-    
-    -- This will be called when the plugin loads
-    function M.init()
-        print("FOO!") -- Do the thing :D
-        return true -- true means we loaded correctly
-    end
+		name = "Foo", -- A very original name for our plugin
+		version = 0.1 -- The version.
+	}
+	
+	-- This will be called when the plugin loads
+	function M.init()
+		print("FOO!") -- Do the thing :D
+		return true -- true means we loaded correctly
+	end
 
-    return M -- Return this plugin :D
+	return M -- Return this plugin :D
 	```
-	2.3 But we are still not done! To tell the loader to load this, add it to the `plugins/plugins.lua` list. That is where the loader looks for plugins.
+	2.3 But we are still not done! To tell the loader to load this new plugin, add this new plugin to `plugins/plugins.lua`. That is where the loader looks for plugins.
 	```Lua
-    	return {
-    	    require("plugins.example.example"),
-    	    require("plugins.test.test"),
-            require("plugins.foo.foo"), -- This is what points the loader to plugins/foo/foo.lua
-        }
+	return {
+		require("plugins.example.example"),
+		require("plugins.test.test"),
+		require("plugins.foo.foo"), -- This is what points the loader to plugins/foo/foo.lua
+	}
 	```
 	2.4 When you run the app now, it should say "FOO!" when the plugins load.
 	```
 	...
-    >> example.lua: init()
-    >> LOADED: Example@0.1
-    >> test.lua: init()
-    >> LOADED: Test@0.1
-    FOO!
-    >> LOADED: Foo@0.1
-    ...
+		>> LOADING: Foo@0.1
+		FOO!
+				...OK!
+	...
 	```
-	2.5 Well it loaded and it said "FOO!"... But can we do more? Yes! Have a look at the other examples of hooks and and calling the API.
+	2.5 Well it loaded and it said "FOO!"... But can we do more? Yes!
+	Have a look at the other plugins in `plugins/` for examples of using hooks, calling the API, etc.
+
 ***
 
 ## TODO
