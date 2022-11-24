@@ -4,7 +4,7 @@
 
 You need Rust \& Cargo installed.
 You might also need to install a lua5.1 (dev) package for your system.
-```
+```bash
 git clone https://gitlab.com/tobii-dev/rust-lua-plugin-system.git
 cd rust-lua-plugin-system
 cargo run
@@ -28,7 +28,7 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 1. Create a directory for this plugin, like for example: `plugins/foo/`
 2. Write the basics: `plugins/foo/foo.lua`
     2.1 Every plugin should have a name and version:
-	```Lua
+	```lua
 	-- This M thing represents the the Lua module.
 	-- Everything in there will be passed to the plugin loader.
 	local M = {}
@@ -42,7 +42,7 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
     return M -- Return: this plugin :D
 	```
 	2.2 Like this, our plugin would not load. To load plugins, the plugin loader calls an `init()` function for every plugin. Lets add this function:
-	```Lua
+	```lua
 	-- This M thing represents the the Lua module:
 	--  Everything in there will be passed to the plugin loader.
 	local M = {}
@@ -62,7 +62,7 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 	return M -- Return this plugin :D
 	```
 	2.3 But we are still not done! To tell the loader to load this new plugin, add this new plugin to `plugins/plugins.lua`. That is where the loader looks for plugins.
-	```Lua
+	```lua
 	return {
 		require("plugins.example.example"),
 		require("plugins.test.test"),
