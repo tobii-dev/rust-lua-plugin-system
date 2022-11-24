@@ -9,6 +9,8 @@ for _,plugin in pairs(require("plugins.plugins")) do
 		if plugin.init() then
 			M.loaded_plugins[#M.loaded_plugins+1] = plugin
 			print("\t...OK!")
+		else
+			print("\t...ERROR")
 		end
 		print()
 	end

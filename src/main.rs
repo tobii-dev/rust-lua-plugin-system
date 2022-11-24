@@ -25,7 +25,8 @@ fn main() {
     let gs = Rc::new(Mutex::new(GlobalState { state: 0 }));
 
     // Like a lua_State in C
-    let lua_vm = Lua::new();
+    // let lua_vm = Lua::new();
+    let lua_vm = unsafe { Lua::unsafe_new() }; // Allow loading custom modules.
 
     // Fancy rust macro: allows writing Lua code in Rust
     let init_code = chunk! {
