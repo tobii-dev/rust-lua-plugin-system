@@ -1,25 +1,37 @@
---- This module is responsible for loading the plugins in plugins/plugins.lua
 local M = require("game")
 
 
---TODO: this should really be a function...
-for _,plugin in pairs(require("plugins.plugins")) do
-	if plugin.info and plugin.init then
-		print(">> LOADING: "..plugin.info.name.."@"..plugin.info.version)
-		local ok, rs = pcall(plugin.init)
-		if ok then
-			if rs then
-				M.loaded_plugins[#M.loaded_plugins+1] = plugin
-				print("\t...OK!")
-			else
-				print("\t...NOT LOADED: init() returned false")
-			end
+---Loads plugins from plugins/plugins.lua
+local function load_plugins()
+	local loaded_plugins = {}
+	local plugins_ok, plugins_rs = pcall(require, "plugins.plugins")
+	if not plugins_ok then
+		print(plugins_rs)
+		return {}
+	end
+	for k,plugin in pairs(plugins_rs) do
+		if not plugin.info then
+			print("\t...ERROR: plugins["..k.."] no plugin.info {} table.")
+		elseif not plugin.init then
+			print("\t...ERROR: plugins["..k.."] no plugin.init() function.")
 		else
-			print("\t...ERROR: "..rs)
+			print(">> LOADING: "..plugin.info.name.."@"..plugin.info.version)
+			local ok, rs = pcall(plugin.init)
+			if not ok then
+				print("\t...ERROR: "..rs)
+			elseif not rs then
+				print("\t...NOT LOADED: init() returned false")
+			else
+				loaded_plugins[#loaded_plugins+1] = plugin
+				print("\t...OK!")
+			end
 		end
 		print()
 	end
+	return loaded_plugins
 end
+
+M.loaded_plugins = load_plugins()
 
 
 --TODO: Move Lua callbacks somewhere more sane (hooks.lua?)
