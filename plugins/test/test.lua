@@ -7,14 +7,12 @@ local game_api = require("game")
 
 
 --- Info about this plugin:
----@type info
 M.info = {
 	--- Plugin name:
 	name = "Test",
 	--- Plugin version:
 	version = 0.1
 }
-
 
 --- Required init() function.
 -- Called when loader.lua loads all the plugins.
@@ -38,9 +36,9 @@ function M.hook(v)
 	-- We can call stuff from game.lua
 	local x = game_api.fn_hello(v)
 	print(">> plugins/test/test.lua:hook() game_api.fn_hello() returns "..tostring(x))
+
 	return true
 end
-
 
 --- Return the plugin
 return M

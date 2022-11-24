@@ -6,11 +6,16 @@ local M = require("game")
 for _,plugin in pairs(require("plugins.plugins")) do
 	if plugin.info and plugin.init then
 		print(">> LOADING: "..plugin.info.name.."@"..plugin.info.version)
-		if plugin.init() then
-			M.loaded_plugins[#M.loaded_plugins+1] = plugin
-			print("\t...OK!")
+		local ok, rs = pcall(plugin.init)
+		if ok then
+			if rs then
+				M.loaded_plugins[#M.loaded_plugins+1] = plugin
+				print("\t...OK!")
+			else
+				print("\t...NOT LOADED: init() returned false")
+			end
 		else
-			print("\t...ERROR")
+			print("\t...ERROR: "..rs)
 		end
 		print()
 	end
@@ -26,9 +31,12 @@ function M.fn_hook(v)
 	for _,plugin in pairs(M.loaded_plugins) do
 		--TODO: Be more explicit about how callbacks are done?
 		if plugin.hook then
-			local r = plugin.hook(v)
-			print(">> :fn_hook() - HOOK: "..plugin.info.name.." = "..tostring(r))
-			--TODO: Handle plugins hook() return value
+			local ok, rs = pcall(plugin.hook, v)
+			if ok then
+				print(">> fn_hook() - HOOK: "..plugin.info.name.." = "..tostring(rs))
+			else
+				print(">> fn_hook() - ERROR at ["..plugin.info.name.."] "..tostring(rs))
+			end
 		end
 	end
 	return true
