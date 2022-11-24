@@ -90,7 +90,7 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 - [X] Call Lua hook() from Rust code.
 - [X] Call Rust fn_() from Lua plugin.
 - [X] Call "API" example from Lua.
-- [ ] Create and load plugins written in Rust
+- [X] Create and load plugins written in Rust
 - [ ] Create and load plugins written in C
 - [ ] Create and load plugins written in C++
 - [ ] Pre/Post hook stuff.
