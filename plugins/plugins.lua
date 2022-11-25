@@ -8,4 +8,5 @@ return {
 
 	-- require("plugins.rust_test.rust_test"), -- written in Rust
 	-- require("plugins.c_test.c_test"), -- written in C
+	-- require("plugins.cpp_test.cpp_test"), -- written in C++
 }
