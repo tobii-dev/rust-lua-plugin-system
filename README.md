@@ -92,7 +92,7 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 - [X] Call "API" example from Lua.
 - [X] Create and load plugins written in Rust
 - [X] Create and load plugins written in C
-- [ ] Create and load plugins written in C++
+- [X] Create and load plugins written in C++
 - [ ] Pre/Post hook stuff.
 - [ ] Advanced examples.
 
