@@ -1,28 +1,24 @@
 use std::rc::Rc;
-use std::sync::Mutex;
+use std::cell::RefCell;
 
 use mlua::{chunk, prelude::*};
 
-/// Prove we can access global state stuff
 #[derive(Debug)]
 struct GlobalState {
-    state: usize, // Represents something about the game state.
+    state: usize,
 }
 
 impl GlobalState {
     /// Dummy function to update the game state.
     fn fn_update(&mut self, var: usize) -> bool {
         self.state += var;
-        println!("## fn_update(): state = {}", self.state);
+        println!("## GlobalState.fn_update(): state = {}", self.state);
         return self.state % 2 == 0; // true if the state is even
     }
 }
 
 fn main() {
-    // the GameState
-    // Rc(Mutex()) because multiple owners (we pass it around to closures that are called from Lua)
-    //TODO: Figure out if we can do this with RwLock or RefCell?
-    let gs = Rc::new(Mutex::new(GlobalState { state: 0 }));
+    let gs = Rc::new(RefCell::new(GlobalState { state: 0 }));
 
     // Like a lua_State in C
     // let lua_vm = Lua::new();
@@ -31,7 +27,7 @@ fn main() {
     // Fancy rust macro: allows writing Lua code in Rust
     let init_code = chunk! {
         print(">> Hi")
-        api = require("loader")
+        api = require("loader") -- api is global now...
     };
     lua_vm.load(init_code).exec().unwrap(); // Load the plugins
 
@@ -48,11 +44,12 @@ fn main() {
         let gs = Rc::clone(&gs);
 
         // Represents a function callable from Lua:
-        // [ v: usize ] -> take (unsigned) number
-        // [ LuaResult<bool> ] -> return a boolean
+        // param: _l -> The Lua state
+        // param: v -> number
+        // ret: LuaResult<bool> -> boolean
         let fn_update_closure = move |_l: &Lua, v: usize| -> LuaResult<bool> {
-            println!("# Hi from fn_update()!");
-            let mut gs = gs.lock().unwrap(); // From here see the GlobalState
+            println!("# Hi from fn_update[_closure]()!");
+            let mut gs = gs.borrow_mut();
             Ok(gs.fn_update(v)) // And even modify it!
         };
         let fn_update: LuaFunction = lua_vm.create_function(fn_update_closure).unwrap();
@@ -65,7 +62,7 @@ fn main() {
         let fn_anon: LuaFunction = lua_vm
             .create_function(move |_l: &Lua, v: usize| -> LuaResult<bool> {
                 println!("# Hi from fn_anon()!");
-                let mut gs = gs.lock().unwrap();
+                let mut gs = gs.borrow_mut();
                 let x = gs.state;
                 Ok(gs.fn_update(x.saturating_sub(v))) // IDK, something different?
             })
@@ -75,7 +72,7 @@ fn main() {
 
     // Print state
     {
-        let mut gs = gs.lock().unwrap();
+        let mut gs = gs.borrow_mut();
         dbg!(&gs);
         dbg!(gs.fn_update(10));
     }
@@ -101,18 +98,18 @@ fn main() {
         }
     }
 
-    // Pretend hook
+    // Pretend hook 1
     {
         println!();
         let fn_hook: LuaFunction = lua_api.get("fn_hook").unwrap();
         let fn_hook_result: bool = fn_hook.call(1 as usize).unwrap();
         dbg!(&fn_hook_result);
     }
-    // Pretend hook
+    // Pretend hook 2
     {
         println!();
         let fn_hook: LuaFunction = lua_api.get("fn_hook").unwrap();
-        let fn_hook_result2: bool = fn_hook.call(1 as usize).unwrap();
+        let fn_hook_result2: bool = fn_hook.call(2 as usize).unwrap();
         dbg!(&fn_hook_result2);
     }
 }
