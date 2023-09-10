@@ -1,8 +1,21 @@
 # Rust Lua Plugin System
 
-## Getting started
+## Description
+This is meant to be a proof of concept on how to manage lua plugin system in Rust.
+The Rust app has a state: we pretend this represents the state of a game.
 
-You need Rust \& Cargo installed.
+### Hooks (Rust -> Lua)
+When the game state changes, we can keep track with hooks.
+Lua plugins can _subscribe_ to these hooks and run their own spooky Lua code when they happen.
+
+### API (Lua -> Rust)
+We can also modify the game state from the Lua plugins.
+To expose the state to these Lua plugins (in a dev friendly way), the plugins can import a Lua API, that, internally,calls Rust funcions.
+
+***
+
+## Getting started
+You need Rust & Cargo installed.
 You might also need to install a lua5.1 (dev) package for your system.
 ```bash
 git clone https://gitlab.com/tobii-dev/rust-lua-plugin-system.git
@@ -10,25 +23,14 @@ cd rust-lua-plugin-system
 cargo run
 ```
 
-## Description
-This is meant to be a proof of concept on how to manage lua plugin system in Rust.
-The Rust app has a state: we pretend this represents the state of a game.
-
-### Game hooks
-When the app state changes, we can keep track with hooks.
-Lua plugins can "subscribe" to these hooks and run their own spooky Lua code when they happen.
-
-### Game API
-We can modify the state of the game and call Rust functions from the Lua plugins.
-To expose these functions (in a dev friendly way), a plugin can import a Lua API, that calls Rust funcions.
-
+***
 
 ## Adding a custom plugin
-Lets just do an example: adding a plugin called "foo" that says "FOO!"" and maybe does some other stuff...
+Lets just do an example: adding a plugin called "foo" that says "FOO!" and maybe does some other stuff...
 
 1. Create a directory for this plugin, like for example: `plugins/foo/`
 
-1. Write the basics: `plugins/foo/foo.lua`
+2. Write the basics: `plugins/foo/foo.lua`
 
     * Every plugin should have a name and version:
 	```lua
@@ -67,7 +69,6 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 	```
 
 	* But we are still not done! To tell the loader to load this new plugin, add this new plugin to `plugins/plugins.lua`. That is where the loader looks for plugins.
-
 	```lua
 	return {
 		require("plugins.example.example"),
@@ -75,6 +76,7 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 		require("plugins.foo.foo"), -- This is what points the loader to plugins/foo/foo.lua
 	}
 	```
+
 	* When you run the app now, it should say "FOO!" when the plugins load.
 	```
 	...
@@ -84,9 +86,7 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 	...
 	```
 
-	* Well it loaded and it said "FOO!"... But can we do more? Yes!
-
-Have a look at the other plugins in `plugins/` for examples of using hooks, calling the API, etc.
+	* Well it loaded and it said "FOO!"... But can we do more? Yes! Have a look at the other plugins in `plugins/` for examples of using hooks, calling the API, etc.
 
 ***
 
