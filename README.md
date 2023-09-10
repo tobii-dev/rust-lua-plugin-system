@@ -25,9 +25,12 @@ To expose these functions (in a dev friendly way), a plugin can import a Lua API
 
 ## Adding a custom plugin
 Lets just do an example: adding a plugin called "foo" that says "FOO!"" and maybe does some other stuff...
+
 1. Create a directory for this plugin, like for example: `plugins/foo/`
-2. Write the basics: `plugins/foo/foo.lua`
-    2.1 Every plugin should have a name and version:
+
+1. Write the basics: `plugins/foo/foo.lua`
+
+    * Every plugin should have a name and version:
 	```lua
 	-- This M thing represents the the Lua module.
 	-- Everything in there will be passed to the plugin loader.
@@ -41,7 +44,8 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 	
     return M -- Return: this plugin :D
 	```
-	2.2 Like this, our plugin would not load. To load plugins, the plugin loader calls an `init()` function for every plugin. Lets add this function:
+
+	* Like this, our plugin would not load. To load plugins, the plugin loader calls an `init()` function for every plugin. Lets add this function:
 	```lua
 	-- This M thing represents the the Lua module:
 	--  Everything in there will be passed to the plugin loader.
@@ -61,7 +65,9 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 
 	return M -- Return this plugin :D
 	```
-	2.3 But we are still not done! To tell the loader to load this new plugin, add this new plugin to `plugins/plugins.lua`. That is where the loader looks for plugins.
+
+	* But we are still not done! To tell the loader to load this new plugin, add this new plugin to `plugins/plugins.lua`. That is where the loader looks for plugins.
+
 	```lua
 	return {
 		require("plugins.example.example"),
@@ -69,7 +75,7 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 		require("plugins.foo.foo"), -- This is what points the loader to plugins/foo/foo.lua
 	}
 	```
-	2.4 When you run the app now, it should say "FOO!" when the plugins load.
+	* When you run the app now, it should say "FOO!" when the plugins load.
 	```
 	...
 		>> LOADING: Foo@0.1
@@ -77,8 +83,10 @@ Lets just do an example: adding a plugin called "foo" that says "FOO!"" and mayb
 				...OK!
 	...
 	```
-	2.5 Well it loaded and it said "FOO!"... But can we do more? Yes!
-	Have a look at the other plugins in `plugins/` for examples of using hooks, calling the API, etc.
+
+	* Well it loaded and it said "FOO!"... But can we do more? Yes!
+
+Have a look at the other plugins in `plugins/` for examples of using hooks, calling the API, etc.
 
 ***
 
